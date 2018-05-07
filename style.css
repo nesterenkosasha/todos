@@ -3,6 +3,26 @@ body * {
     border: 1px solid grey;
 
 }
+.todo{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 460px;
+    padding: 20px;
+}
+.newTodoBtn{
+    margin: 10px;
+    border-radius: 50%;
+}
+.delTodoBtn{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+    border-radius: 50%;
+}
 .div{
     width: 400px;
     min-height: 200px;
@@ -67,15 +87,11 @@ body * {
 .li{
     padding: 10px;
 }
-.pen,
-.btnDel {
-    padding: 20px;
-}
 .pen{
-    background-color: aqua;
+    padding: 5px 7px;
 }
 .btnDel {
-    background-color: darkseagreen;
+    padding: 5px 10px;
 }
 .loader{
     display: flex;
