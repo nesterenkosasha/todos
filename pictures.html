@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DOGS</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
+    <style>
+        body{
+            position: relative;
+        }
+        .wrp {
+            padding: 20px;
+            text-align: center;
+        }
+        .title span {
+            text-decoration: underline;
+        }
+
+        .content {
+            min-height: 50px;
+            max-height: 370px;
+            overflow: auto;
+        }
+        .dog-wrp {
+            display: inline-block;
+        }
+
+        .btn {
+            color: white;
+            background-color: green;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:disabled {
+            background-color: #7f94a1;
+        }
+        .btn-dog {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .image{
+            width: 300px;
+            height: 300px;
+        }
+        .loader {
+            display: block;
+            margin: 0 auto;
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrp">
+    <div class="title">
+        <span>Dogs</span>
+        <button class="btn btn-dog">
+            Get random dog
+        </button>
+    </div>
+    <div class="content">
+
+    </div>
+</div>
+<script src="./pictures.js"></script>
+</body>
+</html>
+

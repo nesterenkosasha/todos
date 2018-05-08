@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
+    <style>
+        .post{
+            margin: 0 auto;
+            max-width: 300px;
+            position: relative;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid grey;
+        }
+        .del{
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .pen{
+            min-width: 110px;
+        }
+    </style>
+</head>
+<body>
+<form id="form" data-form="form" action="#">
+    <input data-val="input"  type="text" />
+    <button id="add">ADD</button>
+</form>
+<div id="output"></div>
+<script>
+
+
+    function get (){
+        fetch("http://localhost:3000/posts", {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'default'
+        })
+            .then(data => data.json())
+            .then(data => {
+         //       console.log("get", data)
+                let place = `<h2>Posts</h2>`
+                data.forEach(post => {
+                    place += `
+                    <div data-id="${post.id}" class="post">
+
+                        <button class="del">x</button>
+                        <button class="pen"><i class="fas fa-pencil-alt"></i></button>
+                        <h3><b>Number:</b> ${post.id}</h3>
+                        <p>${post.name || "name"}</p>
+                    </div>
+                    `
+                })
+                output.innerHTML = place
+            })
+    }
+
+    async function post (form){
+        try{
+            await fetch("http://localhost:3000/posts", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({ "name": form })
+            }).then(data => {
+                console.log(data)
+                    if(data.status === 201){
+                        return data.json()
+                    } else {
+                        console.log(data.status)
+                    }
+                })
+                .then(data => {
+                    const output = document.querySelector("#output")
+                    const item =`<div data-id="${data.id}" class="post">
+                        <button class="del">x</button>
+                        <button class="pen"><i class="fas fa-pencil-alt"></i></button>
+                    <h3><b>Number:</b> ${data.id}</h3>
+                    <p><b>To do:</b> ${data.name || "name"}</p>
+                    </div>`
+                    const re = document.createElement("div")
+                    re.innerHTML = item
+                    output.appendChild(re)
+                })
+
+        } catch(err){
+            console.error(err.message)
+        }
+
+    }
+
+    async function put (item, form){
+        try{
+            await fetch("http://localhost:3000/posts" + "/" + item, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({ "name": form })
+            }).then(data => {
+                    if(data.status === 200){
+                        return data.json()
+                    } else {
+                        console.log(data.status)
+                    }
+                })
+                .then(data => {
+                    const c = document.querySelector(`div[data-id="${data.id}"]`)
+                    console.log(data.id, c.lastElementChild)
+                    const p = document.createElement("p")
+                    p.innerHTML = `<b>To do:</b> ${data.name}`
+                    c.lastElementChild.remove()
+                    c.appendChild(p)
+                    console.log(c, c.lastElementChild, p)
+                    c.lastElementChild.previousElementSibling.innerHTML = `<b>Number:</b> ${data.id}`
+                })
+        } catch(err){
+            console.error(err.message)
+        }
+    }
+
+    async function deleteData(item, url) {
+        try{
+            await fetch(url + '/' + item, {
+                method: 'delete'
+            }).then(data => {
+                if(data.status === 200){
+                    const c = document.querySelector(`div[data-id="${item}"]`)
+                        c.remove()
+                } else {
+                    console.log(data.status)
+                }
+            })
+        } catch({ message }){
+            console.error(message)
+        }
+    }
+
+
+    document.addEventListener("click", async ({ target }) => {
+        switch(target.getAttribute("class")){
+            case "pen": {
+                if(target.parentNode.lastElementChild.tagName === "P"){
+                    const input = document.createElement("input")
+                    input.type = "text"
+                    target.parentNode.replaceChild(input, target.parentNode.lastElementChild)
+                    console.log(input.value)
+                } else {
+                    console.log("RUN", target.parentNode.lastElementChild.value)
+                    await put(target.parentNode.dataset.id, target.parentNode.lastElementChild.value)
+                }
+                break
+            }
+            case "del": {
+                await deleteData(target.parentNode.dataset.id, "http://localhost:3000/posts")
+                break}
+        }
+    })
+
+    document.getElementById("form").addEventListener("submit",  async (e) => {
+        e.preventDefault()
+        const { value } = e.target.firstElementChild
+        await post(value)
+        e.target.firstElementChild.value = ""
+    })
+
+    document.addEventListener('DOMContentLoaded', () => {
+        get()
+    })
+
+</script>
+</body>
+</html>
